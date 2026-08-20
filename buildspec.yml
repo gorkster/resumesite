@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  variables:
+    HUGO_ENV: "production"
+    HUGO_VERSION: "0.165.0"
+  secrets-manager:
+    UMAMI_WEBSITE_ID: "/resumesite/env:UMAMI_WEBSITE_ID"
+    HUGO_CONTACT_EMAIL: "/resumesite/env:HUGO_CONTACT_EMAIL"
+    HUGO_CONTACT_PHONE: "/resumesite/env:HUGO_CONTACT_PHONE"
+
+
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      # Install Hugo extended (pinned version)
+      - echo "Installing Hugo v${HUGO_VERSION}..."
+      - wget "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+      - dpkg -i hugo_extended_${HUGO_VERSION}_linux-amd64.deb
+
+  build:
+    commands:
+      - echo "Building Hugo site..."
+      - hugo --minify
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: public

@@ -1,0 +1,8 @@
+baseURL = 'https://resume.grtmkr.com/'
+languageCode = 'en-us'
+title = 'Andrew Gortmaker - Resume'
+
+[params.umami]
+
+website_id = '6b6e8a7e-a049-4b24-b87e-7df42683cd4b'
+script_url = 'https://cloud.umami.is/script.js'

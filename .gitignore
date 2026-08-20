@@ -1,0 +1,19 @@
+# Hugo generated files
+public/
+resources/_gen/
+.hugo_build.lock
+
+# Node.js and CDK (CDK creates its own ignore file in infra/, but good to have here as well)
+node_modules/
+cdk.out/
+.env
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Any temporary test scripts or scratch files
+scratch/

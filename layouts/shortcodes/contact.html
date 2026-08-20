@@ -1,0 +1,27 @@
+{{ $type := .Get 0 }}
+{{ $value := .Get 1 }}
+
+{{ if not $value }}
+  {{ if eq $type "email" }}
+    {{ $value = os.Getenv "HUGO_CONTACT_EMAIL" | default .Site.Params.contact_email }}
+  {{ else if eq $type "phone" }}
+    {{ $value = os.Getenv "HUGO_CONTACT_PHONE" | default .Site.Params.contact_phone }}
+  {{ end }}
+{{ end }}
+
+{{ if $value }}
+  {{ $b64Value := base64Encode $value }}
+  {{ $prefix := "" }}
+
+  {{ if eq $type "email" }}
+    {{ $prefix = "mailto:" }}
+  {{ else if eq $type "phone" }}
+    {{ $prefix = "tel:" }}
+  {{ end }}
+
+  {{ $b64Prefix := base64Encode $prefix }}
+
+  <span class="obf-contact" data-p="{{ $b64Prefix }}" data-v="{{ $b64Value }}">Javascript is required to view contact info.</span>
+{{ else }}
+  <span class="obf-contact">[Contact info hidden]</span>
+{{ end }}

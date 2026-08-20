@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <meta name="description" content="Resume of Andrew Gortmaker, Cloud Engineer">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    
+    {{ if and .Site.Params.umami.website_id (ne .Site.Params.umami.website_id "YOUR_UMAMI_WEBSITE_ID") }}
+    <!-- Umami Analytics -->
+    <script async defer src="{{ .Site.Params.umami.script_url }}" data-website-id="{{ .Site.Params.umami.website_id }}"></script>
+    {{ else }}
+    <!-- Umami Analytics Placeholder: configure in hugo.toml -->
+    {{ end }}
+</head>
+<body>
+    <div class="background-effects">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div class="container glass-panel">
+        {{ block "main" . }}{{ end }}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.obf-contact').forEach(el => {
+                const prefix = atob(el.getAttribute('data-p') || '');
+                const value = atob(el.getAttribute('data-v') || '');
+                
+                const link = document.createElement('a');
+                if (prefix) {
+                    link.href = prefix + value;
+                }
+                link.textContent = value;
+                el.parentNode.replaceChild(link, el);
+            });
+        });
+    </script>
+</body>
+</html>
