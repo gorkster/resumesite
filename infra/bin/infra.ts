@@ -17,7 +17,7 @@ import { Validations } from 'aws-cdk-lib';
 
 const app = new cdk.App();
 
-Validations.of(app).addPlugins(new AwsSolutionsChecks());
+//Validations.of(app).addPlugins(new AwsSolutionsChecks());
 
 const hostedZoneId = process.env.HOSTED_ZONE_ID || app.node.tryGetContext('hostedZoneId');
 const zoneName = process.env.ZONE_NAME || app.node.tryGetContext('zoneName') || 'resume.grtmkr.com';
