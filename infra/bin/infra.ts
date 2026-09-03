@@ -10,8 +10,14 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 import * as cdk from 'aws-cdk-lib';
 import { InfraStack } from '../lib/infra-stack';
 import { CertStack } from '../lib/CertStack';
+import { AwsSolutionsChecks } from 'cdk-nag';
+import { Validations } from 'aws-cdk-lib';
+
+
 
 const app = new cdk.App();
+
+Validations.of(app).addPlugins(new AwsSolutionsChecks());
 
 const hostedZoneId = process.env.HOSTED_ZONE_ID || app.node.tryGetContext('hostedZoneId');
 const zoneName = process.env.ZONE_NAME || app.node.tryGetContext('zoneName') || 'resume.grtmkr.com';
@@ -40,4 +46,3 @@ new InfraStack(app, 'InfraStack', {
 cdk.Tags.of(app).add('Project', 'ResumeSite');
 cdk.Tags.of(app).add('repository', 'resumesite');
 cdk.Tags.of(app).add('Environment', 'Personal');
-

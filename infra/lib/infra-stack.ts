@@ -46,6 +46,17 @@ export class InfraStack extends cdk.Stack {
       autoDeleteObjects: true,
     });
 
+    cdk.Validations.of(siteBucket).acknowledge(
+      {
+        id: 'AwsSolutions-S1',
+        reason: 'Server access logging is not required for static website hosting bucket behind CloudFront',
+      },
+      {
+        id: 'AwsSolutions-S10',
+        reason: 'Bucket is accessed via CloudFront OAC with HTTPS enforced at distribution level',
+      },
+    );
+
     const zone = route53.HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
       hostedZoneId,
       zoneName,
@@ -67,6 +78,11 @@ export class InfraStack extends cdk.Stack {
       description: 'Environment variables for ResumeSite build and runtime',
       secretStringValue: cdk.SecretValue.unsafePlainText('{}'),
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    cdk.Validations.of(appEnvSecret).acknowledge({
+      id: 'AwsSolutions-SMG4',
+      reason: 'App env secret stores static configuration and does not require automatic rotation',
     });
 
     const distribution = new cloudfront.Distribution(this, 'SiteDistribution', {
@@ -99,6 +115,11 @@ export class InfraStack extends cdk.Stack {
     const pipeline = new codepipeline.Pipeline(this, 'ResumeSitePipeline', {
       pipelineName: 'ResumeSiteDeployPipeline',
       crossAccountKeys: false,
+    });
+
+    cdk.Validations.of(pipeline.artifactBucket).acknowledge({
+      id: 'AwsSolutions-S1',
+      reason: 'Server access logging is not required for CodePipeline artifacts bucket',
     });
 
 

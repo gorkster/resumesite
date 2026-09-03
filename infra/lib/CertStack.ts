@@ -36,7 +36,7 @@ export class CertStack extends cdk.Stack {
       validation: acm.CertificateValidation.fromDns(zone),
     });
 
-    new secretsmanager.Secret(this, 'CertArnSecret', {
+    const certArnSecret = new secretsmanager.Secret(this, 'CertArnSecret', {
       secretName: '/resumesite/global-cert-arn',
       secretStringValue: cdk.SecretValue.unsafePlainText(certificate.certificateArn),
       replicaRegions: [
@@ -44,6 +44,11 @@ export class CertStack extends cdk.Stack {
           region: 'us-east-2',
         },
       ],
+    });
+
+    cdk.Validations.of(certArnSecret).acknowledge({
+      id: 'AwsSolutions-SMG4',
+      reason: 'Certificate ARN secret stores static reference and does not support automatic rotation',
     });
   }
 }
