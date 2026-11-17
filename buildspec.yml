@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     HUGO_ENV: "production"
-    HUGO_VERSION: "0.165.0"
+    HUGO_VERSION: "0.170.0"
   secrets-manager:
     UMAMI_WEBSITE_ID: "/resumesite/env:UMAMI_WEBSITE_ID"
     HUGO_CONTACT_EMAIL: "/resumesite/env:HUGO_CONTACT_EMAIL"
@@ -14,7 +14,7 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 26
     commands:
       # Install Hugo extended (pinned version)
       - echo "Installing Hugo v${HUGO_VERSION}..."
