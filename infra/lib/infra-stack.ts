@@ -141,7 +141,7 @@ export class InfraStack extends cdk.Stack {
 
     const buildProject = new codebuild.PipelineProject(this, 'HugoBuild', {
       environment: {
-        buildImage: codebuild.LinuxBuildImage.AMAZON_LINUX_2023_5,
+        buildImage: codebuild.LinuxBuildImage.STANDARD_8_0,
       },
     });
 
