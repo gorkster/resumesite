@@ -27,7 +27,7 @@ get_var() {
     local current_val=""
 
     if [ -n "$ENV_FILE" ]; then
-        current_val=$(grep -E "^${var_name}=" "$ENV_FILE" | cut -d '=' -f2- | tr -d '"' | tr -d "'")
+        current_val=$(grep -E "^${var_name}=" "$ENV_FILE" | cut -d '=' -f2- | tr -d '"' | tr -d "'" || true)
     fi
 
     if [ -z "$current_val" ]; then
@@ -35,7 +35,7 @@ get_var() {
     fi
 
     if [ -t 0 ]; then
-        read -p "$prompt_desc [$current_val]: " input_val
+        read -r -p "$prompt_desc [$current_val]: " input_val
         if [ -n "$input_val" ]; then
             echo "$input_val"
         else
@@ -64,7 +64,17 @@ HUGO_CONTACT_PHONE=$(get_var "HUGO_CONTACT_PHONE" "Enter HUGO_CONTACT_PHONE" "")
 echo ""
 echo "Constructing JSON payload..."
 
-JSON_PAYLOAD=$(node -e "
+JSON_PAYLOAD=$(
+  UMAMI_WEBSITE_ID="$UMAMI_WEBSITE_ID" \
+  HOSTED_ZONE_ID="$HOSTED_ZONE_ID" \
+  ZONE_NAME="$ZONE_NAME" \
+  CODESTAR_CONNECTION_ARN="$CODESTAR_CONNECTION_ARN" \
+  GITHUB_OWNER="$GITHUB_OWNER" \
+  GITHUB_REPO="$GITHUB_REPO" \
+  GITHUB_BRANCH="$GITHUB_BRANCH" \
+  HUGO_CONTACT_EMAIL="$HUGO_CONTACT_EMAIL" \
+  HUGO_CONTACT_PHONE="$HUGO_CONTACT_PHONE" \
+  node -e "
 const data = {
   UMAMI_WEBSITE_ID: process.env.UMAMI_WEBSITE_ID || '',
   HOSTED_ZONE_ID: process.env.HOSTED_ZONE_ID || '',
@@ -77,15 +87,7 @@ const data = {
   HUGO_CONTACT_PHONE: process.env.HUGO_CONTACT_PHONE || ''
 };
 console.log(JSON.stringify(data, null, 2));
-" UMAMI_WEBSITE_ID="$UMAMI_WEBSITE_ID" \
-  HOSTED_ZONE_ID="$HOSTED_ZONE_ID" \
-  ZONE_NAME="$ZONE_NAME" \
-  CODESTAR_CONNECTION_ARN="$CODESTAR_CONNECTION_ARN" \
-  GITHUB_OWNER="$GITHUB_OWNER" \
-  GITHUB_REPO="$GITHUB_REPO" \
-  GITHUB_BRANCH="$GITHUB_BRANCH" \
-  HUGO_CONTACT_EMAIL="$HUGO_CONTACT_EMAIL" \
-  HUGO_CONTACT_PHONE="$HUGO_CONTACT_PHONE"
+"
 )
 
 echo "Uploading secret to AWS Secrets Manager ($SECRET_NAME in $REGION)..."
